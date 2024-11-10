@@ -1,0 +1,6 @@
+
+pandas
+tk
+scikit-learn
+pillow
+pydot
