@@ -5,6 +5,8 @@ from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from PIL import Image, ImageTk
 import pydot
 import os
+import tkinter as tk
+from tkinter import ttk
 
 # Cargar datos
 data = pd.read_excel("pacientes_diabetes_1.xlsx")
@@ -160,18 +162,40 @@ def diagnosticar():
         camino_path = generar_imagen_camino(nombre, cedula, patient_data)
         mostrar_imagen(camino_path, "Camino Recorrido en el Árbol de Decisión")
 
+        # Limpiar entradas
+        nombre_entry.delete(0, tk.END)
+        cedula_entry.delete(0, tk.END)
+        edad_entry.delete(0, tk.END)
+        nivel_glucosa_entry.delete(0, tk.END)
+        presion_arterial_entry.delete(0, tk.END)
+        imc_entry.delete(0, tk.END)
+        historial_familiar_entry.delete(0, tk.END)
+
     except ValueError:
         messagebox.showerror("Error", "Por favor, ingrese datos válidos.")
 
 
-# Crear la interfaz gráfica
+# Crear la ventana principal
 root = tk.Tk()
 root.title("Diagnóstico de Diabetes")
-root.configure(bg="#f0f8ff")
+root.configure(bg="#f5f5f5")
+root.geometry("500x600")  # Tamaño más amplio y alto para mejor presentación
 
-form_frame = tk.Frame(root, bg="#ffffff", borderwidth=2, relief="groove")
-form_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=20, pady=20)
+# Marco del formulario
+form_frame = tk.Frame(root, bg="#ffffff", bd=2, relief="groove")
+form_frame.pack(pady=20, padx=20, fill="both", expand=True)
 
+# Título del formulario
+form_title = tk.Label(
+    form_frame,
+    text="Formulario de Diagnóstico de Diabetes",
+    bg="#ffffff",
+    font=("Helvetica", 16, "bold"),
+    fg="#333333",
+)
+form_title.pack(pady=(10, 20))
+
+# Lista de etiquetas y entradas
 labels = [
     "Nombre:",
     "Cédula:",
@@ -183,14 +207,18 @@ labels = [
 ]
 entries = []
 
-for i, text in enumerate(labels):
-    ttk.Label(form_frame, text=text, background="#ffffff").grid(
-        column=0, row=i, padx=10, pady=10, sticky=tk.W
+# Crear etiquetas y entradas
+for text in labels:
+    label = tk.Label(
+        form_frame, text=text, bg="#ffffff", font=("Helvetica", 12), anchor="w"
     )
-    entry = ttk.Entry(form_frame, width=30)
-    entry.grid(column=1, row=i, padx=10, pady=10)
+    label.pack(fill="x", padx=20, pady=(5, 0))
+
+    entry = ttk.Entry(form_frame, font=("Helvetica", 12))
+    entry.pack(fill="x", padx=20, pady=5)
     entries.append(entry)
 
+# Asignar las entradas a variables
 (
     nombre_entry,
     cedula_entry,
@@ -203,8 +231,21 @@ for i, text in enumerate(labels):
 
 # Botón de diagnóstico
 diagnosticar_btn = ttk.Button(form_frame, text="Diagnosticar", command=diagnosticar)
-diagnosticar_btn.grid(column=0, row=len(labels), columnspan=2, pady=20)
+diagnosticar_btn.pack(pady=5)
 
-# Configuración de ventana principal
-root.geometry("400x400")
+# Estilo adicional para el botón (opcional)
+style = ttk.Style()
+style.configure("TButton", font=("Helvetica", 10), padding=10)
+
+# Pie de página
+footer = tk.Label(
+    root,
+    text="© 2024 Diagnóstico Inteligente. Todos los derechos reservados.",
+    bg="#f5f5f5",
+    font=("Helvetica", 10),
+    fg="#666666",
+)
+footer.pack(side="bottom", pady=10)
+
+# Ejecutar la ventana principal
 root.mainloop()
